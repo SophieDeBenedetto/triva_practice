@@ -9,6 +9,10 @@ defmodule TrivaPractice.Participant do
     GenServer.cast(participant, {:next_question, question})
   end
 
+  def get_question(participant) do
+    GenServer.call(participant, :get_question)
+  end
+
   def submit_response(participant, response) do
     GenServer.cast(participant, {:submit_response, response})
   end
@@ -55,5 +59,10 @@ defmodule TrivaPractice.Participant do
 
   def handle_cast(:notify_of_round_end, %{output_pid: op, current_round: %{response_provided: true}} = state) do
     {:noreply, state}
+  end
+
+  def handle_call(:get_question, _from, %{output_pid: op, current_round: %{question: question}} = state) do
+    # send op, {:ok, question}
+    {:reply, question, state}
   end
 end
